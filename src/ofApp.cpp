@@ -20,8 +20,7 @@ int xFadeProgress = 0;
 void ofApp::setup(){
     ofBackground(0,0,0);
     ofSetVerticalSync(true);
-    this->loadNew();
-    // CGDisplayHideCursor(kCGDirectMainDisplay);
+    
     timeLimit = 4;// this represents the five seconds you want to set as a flag to call
     timeNow = 0;// always a good practice to define your variables in setup.
     loopNumber =0; // initialise loops to off
@@ -31,16 +30,19 @@ void ofApp::setup(){
     
     //build gui group
     gui.setup( "Parameters", "settings.xml" );
-    
     gui.add( speed.setup( "speed", 1.0, -10.0, 10.0 ) );
     gui.add( loopMax.setup( "loopMax", 5, 1, 10 ) );
     gui.add( videoAlpha.setup( "alpha", 255, 0, 255 ) );
     gui.add( fade.setup( "fade", false));
     gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
+    
+    
+    this->loadNew();
+    // CGDisplayHideCursor(kCGDirectMainDisplay);
 }
 
-//--------
+//--------------------------------------------------------------
 
 void ofApp::loadFiles() {
    
@@ -52,7 +54,6 @@ void ofApp::loadFiles() {
         fs::remove_all("sandbox");
     
 }
-
 
 //--------------------------------------------------------------
 
@@ -67,8 +68,8 @@ void ofApp::loadNew(){
     } else {
         momentMovie.setLoopState(OF_LOOP_NONE);
     }
-    momentMovie.setSpeed(speed);
     momentMovie.play();
+     momentMovie.setSpeed(speed);
      std::cout << "speed: " << speed << endl;
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
