@@ -107,7 +107,7 @@ void ofApp::xFade(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update(){ 
     momentMovie.update();
     
     if(momentMovie.getIsMovieDone()){
