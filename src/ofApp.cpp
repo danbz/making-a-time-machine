@@ -9,6 +9,9 @@ float randomNumber;
 int loopNumber;
 int loopMax;
 int totalMovies;
+int movieDuration;
+int currentFrame;
+bool playForward;
 
 int vdoNr;
 bool showGui;
@@ -28,6 +31,10 @@ void ofApp::setup(){
     vdoNr=1; //starting random number for selecting movie
     totalMovies=80; //total amount of movies available to be played
     
+    movieDuration=0;
+    currentFrame=0;
+    playForward=true;
+    
     //build gui group
     gui.setup( "Parameters", "settings.xml" );
     gui.add( speed.setup( "speed", 1.0, -10.0, 10.0 ) );
@@ -45,7 +52,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 
 void ofApp::loadFiles() {
-   
+   //unused routine that may parse directory and automatically read in number and names of movie files
         fs::create_directories("sandbox/a/b");
         std::ofstream("sandbox/file1.txt");
         std::ofstream("sandbox/file2.txt");
@@ -63,14 +70,15 @@ void ofApp::loadNew(){
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
     // std::cout << "value: " << vdoNr << endl;
     momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov"); //choose new clip randomly
+    movieDuration = momentMovie.getTotalNumFrames();
     if (palindrome) {
         momentMovie.setLoopState(OF_LOOP_PALINDROME);
     } else {
         momentMovie.setLoopState(OF_LOOP_NONE);
     }
     momentMovie.play();
-     momentMovie.setSpeed(speed);
-     std::cout << "speed: " << speed << endl;
+    momentMovie.setSpeed(speed);
+    //--- std::cout << "speed: " << speed << endl;
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
     
@@ -110,24 +118,56 @@ void ofApp::xFade(){
 void ofApp::update(){ 
     momentMovie.update();
     
-    if(momentMovie.getIsMovieDone()){
-        //-- std::cout << "loopDone: " << loopNumber << endl;
-        //--- hold last frame of previous loop of video to prevent flash of black -- maybe -- start
-        vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
-        ofSetColor( 255, 255 ); // draw the captured last frame of the previosu video
-        vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );
-        //--- hold last frame - end
-        if (loopNumber>=loopMax){this->loadNew();
-            
+//    if(momentMovie.getIsMovieDone()){
+//        //-- std::cout << "loopDone: " << loopNumber << endl;
+//        //--- hold last frame of previous loop of video to prevent flash of black -- maybe -- start
+//        vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
+//        ofSetColor( 255, 255 ); // draw the captured last frame of the previosu video
+//        vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );
+//        //--- hold last frame - end
+//        if (loopNumber>=loopMax){this->loadNew();
+//            
+//        }else{
+//            loopNumber ++;
+//            momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov");
+//            momentMovie.setLoopState(OF_LOOP_NONE);
+//            momentMovie.play();
+//        }
+//    }
+    
+    //--------
+    //new palindrome looping ting
+    //
+    //momentMovie.getCurrentFrame() = thisFrame;
+    if(playForward){
+        if(currentFrame<movieDuration){
+            currentFrame++;
         }else{
-            loopNumber ++;
-            momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov");
-            momentMovie.setLoopState(OF_LOOP_NONE);
-            momentMovie.play();
+            playForward = false; //got to the end - turn round
+            currentFrame--;
+             //momentMovie.setSpeed(-1.0);
+        }
+    }else{
+        if (currentFrame>0){
+            currentFrame--;
+        }else{
+            playForward = true; //got to the beginning - turn round
+            currentFrame++;
+            //momentMovie.setSpeed(1.0);
         }
     }
     
-    timeNow = ofGetElapsedTimef();// this functions keep track of the time in seconds once the application has initialized.
+    //std::cout << "palindrome frame: " << currentFrame << endl;
+    //std::cout << "movieDuration: " << movieDuration << endl;
+    //std::cout << "playForward: " << playForward << endl;
+
+    momentMovie.setFrame(currentFrame);
+    
+    //
+    //-------
+    //
+    
+    //timeNow = ofGetElapsedTimef();// this functions keep track of the time in seconds once the application has initialized.
     
     //    if ( timeNow >= timeLimit){//if the current time is equal or greater than 3.2 seconds...
     //      //loadNew();//we exit the LOADNEW function.
@@ -151,12 +191,10 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     //if (blackGap == 0){
-    // momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //use to insert blakc space between each video
+    // momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //use to insert black space between each video
     //}
-    
-    // ofSetColor(ofColor::white);
+    // ofSetColor(ofColor::white);//write debug framerate to screen
     //  ofDrawBitmapString("value: " + ofToString(vdoNr), 10, 10);
-    //momentMovie.draw(0,0,ofGetWidth(),ofGetHeight());
     
     if (fade) xFade(); // if fade selected in gui then call xfade function
     
