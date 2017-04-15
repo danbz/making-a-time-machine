@@ -2,6 +2,7 @@
 #include "ofMath.h"
 #include "ofxGui.h"
 
+
 float timeNow;
 float timeLimit;
 float randomNumber;
@@ -13,7 +14,7 @@ int vdoNr;
 bool showGui;
 bool xFading = false;
 int xFadeProgress = 0;
-
+ namespace fs = std::filesystem;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -26,7 +27,7 @@ void ofApp::setup(){
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
     vdoNr=1; //starting random number for selecting movie
-    totalMovies=12; //total amount of movies available to be played
+    totalMovies=80; //total amount of movies available to be played
     
     //build gui group
     gui.setup( "Parameters", "settings.xml" );
@@ -35,19 +36,37 @@ void ofApp::setup(){
     gui.add( loopMax.setup( "loopMax", 5, 1, 10 ) );
     gui.add( videoAlpha.setup( "alpha", 255, 0, 255 ) );
     gui.add( fade.setup( "fade", false));
-
+    gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
 }
+
+//--------
+
+void ofApp::loadFiles() {
+   
+        fs::create_directories("sandbox/a/b");
+        std::ofstream("sandbox/file1.txt");
+        std::ofstream("sandbox/file2.txt");
+        for(auto& p: fs::directory_iterator("sandbox"))
+        std::cout << p << '\n';
+        fs::remove_all("sandbox");
+    
+}
+
 
 //--------------------------------------------------------------
 
 void ofApp::loadNew(){
     loopNumber =0; // initialise loops to zero
-    vdoNr = (int) ofRandom(1, 13);
+    vdoNr = (int) ofRandom(1, totalMovies);
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
     // std::cout << "value: " << vdoNr << endl;
-    momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov"); //choose new clip randomly
-    momentMovie.setLoopState(OF_LOOP_NONE);
+    momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov"); //choose new clip randomly
+    if (palindrome) {
+        momentMovie.setLoopState(OF_LOOP_PALINDROME);
+    } else {
+        momentMovie.setLoopState(OF_LOOP_NONE);
+    }
     momentMovie.setSpeed(speed);
     momentMovie.play();
      std::cout << "speed: " << speed << endl;
@@ -101,7 +120,7 @@ void ofApp::update(){
             
         }else{
             loopNumber ++;
-            momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov");
+            momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov");
             momentMovie.setLoopState(OF_LOOP_NONE);
             momentMovie.play();
         }

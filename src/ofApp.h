@@ -3,6 +3,9 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include <ApplicationServices/ApplicationServices.h>
+#include <string>
+#include <iostream>
+//#include <filesystem>
 
 class ofApp : public ofBaseApp{
     
@@ -24,6 +27,7 @@ public:
     void gotMessage(ofMessage msg);
     void loadNew();
     void xFade();
+    void loadFiles();
     
     
     ofVideoPlayer 		momentMovie;
@@ -32,7 +36,7 @@ public:
     ofxPanel gui;
     ofxFloatSlider speed;
     ofxIntSlider loopMax, videoAlpha;
-    ofxToggle fade, type;
+    ofxToggle fade, palindrome;
     
     //ofxGuiGroup primGroup;
     //ofxFloatSlider speed, length;
