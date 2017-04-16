@@ -29,7 +29,7 @@ void ofApp::setup(){
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
     vdoNr=1; //starting random number for selecting movie
-    totalMovies=8; //total amount of movies available to be played
+    totalMovies=9; //total amount of movies available to be played
     
     movieDuration=0;
     currentFrame=0;
@@ -105,8 +105,10 @@ void ofApp::xFade(){
             
             //--- fade progression
             if (videoAlpha<255) {
-                videoAlpha = videoAlpha+1;
-            } else {
+                videoAlpha = videoAlpha+10;
+                if (videoAlpha>255){videoAlpha=255;}
+                }
+            else {
                 videoAlpha=255;
                 xFading = false; // xfading complete
             }
@@ -155,7 +157,14 @@ void ofApp::update(){
             currentFrame--;
         }else{
             playForward = true; //got to the beginning - turn round
-            currentFrame++;
+            if (loopNumber>=loopMax){
+                this->loadNew();
+            } else{
+                currentFrame++;
+                loopNumber ++;
+            }
+           
+            
             //momentMovie.setSpeed(1.0);
         }
     }
@@ -201,7 +210,7 @@ void ofApp::draw(){
     // ofSetColor(ofColor::white);//write debug framerate to screen
     //  ofDrawBitmapString("value: " + ofToString(vdoNr), 10, 10);
     
-    //if (fade) xFade(); // if fade selected in gui then call xfade function
+    if (fade) xFade(); // if fade selected in gui then call xfade function
     
     momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //draw frame of movie
     
