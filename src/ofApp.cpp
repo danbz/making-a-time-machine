@@ -29,7 +29,7 @@ void ofApp::setup(){
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
     vdoNr=1; //starting random number for selecting movie
-    totalMovies=80; //total amount of movies available to be played
+    totalMovies=8; //total amount of movies available to be played
     
     movieDuration=0;
     currentFrame=0;
@@ -69,7 +69,7 @@ void ofApp::loadNew(){
     vdoNr = (int) ofRandom(1, totalMovies);
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
     // std::cout << "value: " << vdoNr << endl;
-    momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov"); //choose new clip randomly
+    momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +"-anim-machine H.264.mov"); //choose new clip randomly
     movieDuration = momentMovie.getTotalNumFrames();
     if (palindrome) {
         momentMovie.setLoopState(OF_LOOP_PALINDROME);
@@ -77,7 +77,7 @@ void ofApp::loadNew(){
         momentMovie.setLoopState(OF_LOOP_NONE);
     }
     momentMovie.play();
-    momentMovie.setSpeed(speed);
+    momentMovie.setSpeed(0);
     //--- std::cout << "speed: " << speed << endl;
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
@@ -93,10 +93,12 @@ void ofApp::xFade(){
     
     //if (fade){
         // std::cout << "fade: " << endl;
-        ofEnableAlphaBlending();
-        ofEnableBlendMode( OF_BLENDMODE_ALPHA );
+    
         
         if (xFading) {
+            ofEnableAlphaBlending();
+            ofEnableBlendMode( OF_BLENDMODE_ALPHA );
+            //
             ofSetColor( 255, 255 ); // draw the captured last frame of the previous video
             vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );  // draw the captured frame to screen
             ofSetColor( 255, videoAlpha );
@@ -116,9 +118,9 @@ void ofApp::xFade(){
 
 //--------------------------------------------------------------
 void ofApp::update(){ 
-    momentMovie.update();
     
-//    if(momentMovie.getIsMovieDone()){
+    
+//    if(momentMovie.getIsMovieDone()){ //old routine to swap movies on a timed basis
 //        //-- std::cout << "loopDone: " << loopNumber << endl;
 //        //--- hold last frame of previous loop of video to prevent flash of black -- maybe -- start
 //        vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
@@ -133,8 +135,9 @@ void ofApp::update(){
 //            momentMovie.setLoopState(OF_LOOP_NONE);
 //            momentMovie.play();
 //        }
-//    }
+//    } //end of old routine to swap movies
     
+    momentMovie.update();
     //--------
     //new palindrome looping ting
     //
@@ -160,8 +163,10 @@ void ofApp::update(){
     //std::cout << "palindrome frame: " << currentFrame << endl;
     //std::cout << "movieDuration: " << movieDuration << endl;
     //std::cout << "playForward: " << playForward << endl;
-
-    momentMovie.setFrame(currentFrame);
+    
+   // if (momentMovie.isFrameNew()){
+        momentMovie.setFrame(currentFrame);
+    //}
     
     //
     //-------
@@ -196,7 +201,7 @@ void ofApp::draw(){
     // ofSetColor(ofColor::white);//write debug framerate to screen
     //  ofDrawBitmapString("value: " + ofToString(vdoNr), 10, 10);
     
-    if (fade) xFade(); // if fade selected in gui then call xfade function
+    //if (fade) xFade(); // if fade selected in gui then call xfade function
     
     momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //draw frame of movie
     
