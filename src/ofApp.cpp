@@ -18,6 +18,7 @@ bool showGui;
 bool xFading = false;
 int xFadeProgress = 0;
  namespace fs = std::filesystem;
+int fadeSpeed;
 
 
 //easing stuff
@@ -40,22 +41,22 @@ void ofApp::setup(){
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
     vdoNr=1; //starting random number for selecting movie
-    totalMovies=10; //total amount of movies available to be played
+    totalMovies=11; //total amount of movies available to be played
     
     movieDuration=0;
     currentFrame=0;
-    playForward=true;
     
     //build gui group
     gui.setup( "Parameters", "settings.xml" );
     gui.add( duration.setup( "duration", 5.0, 1.0, 10.0 ) );
     gui.add( loopMax.setup( "loopMax", 5, 1, 10 ) );
+    gui.add( fadeSpeed.setup( "fadeSpeed", 5, 1, 10 ) );
     gui.add( videoAlpha.setup( "alpha", 255, 0, 255 ) );
     gui.add( fade.setup( "fade", false));
     //gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
     
-    this->loadNew();
+    
     // CGDisplayHideCursor(kCGDirectMainDisplay);
     
     //--- easing stuff
@@ -63,34 +64,24 @@ void ofApp::setup(){
     easedFrame =0.f;
     startRange= 0;
     endRange = 0;
+    
+    this->loadNew();
 }
 
 //--------------------------------------------------------------
-
-void ofApp::loadFiles() {
-   //unused routine that may parse directory and automatically read in number and names of movie files
-        fs::create_directories("sandbox/a/b");
-        std::ofstream("sandbox/file1.txt");
-        std::ofstream("sandbox/file2.txt");
-        for(auto& p: fs::directory_iterator("sandbox"))
-        std::cout << p << '\n';
-        fs::remove_all("sandbox");
-}
-
-//--------------------------------------------------------------
-
 void ofApp::loadNew(){
     loopNumber =0; // initialise loops to zero
     vdoNr = (int) ofRandom(1, totalMovies);
+    
+    momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
+    
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
     momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov"); //choose new clip randomly
      // momentMovie.load("lge-movies/sky-h264.mov"); //choose new clip for test comparison
-    movieDuration = momentMovie.getTotalNumFrames();
-  
-        momentMovie.setLoopState(OF_LOOP_NONE);
-    
+    momentMovie.setLoopState(OF_LOOP_NONE);
     momentMovie.play();
     momentMovie.setSpeed(0);
+    movieDuration = momentMovie.getTotalNumFrames();
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
     
@@ -100,12 +91,8 @@ void ofApp::loadNew(){
 }
 
 //--------------------------------------------------------------
-
 void ofApp::xFade(){
     
-    //if (fade){
-        // std::cout << "fade: " << endl;
-        
         if (xFading) {
             ofEnableAlphaBlending();
             ofEnableBlendMode( OF_BLENDMODE_ALPHA );
@@ -116,7 +103,7 @@ void ofApp::xFade(){
             
             //--- fade progression
             if (videoAlpha<255) {
-                videoAlpha = videoAlpha+10;
+                videoAlpha = videoAlpha+fadeSpeed;
                 if (videoAlpha>255){videoAlpha=255;}
                 }
             else {
@@ -124,9 +111,6 @@ void ofApp::xFade(){
                 xFading = false; // xfading complete
             }
         }
-    //} else {
-    //   ofSetColor( 255, 255 );
-    //}
 }
 
 //--------------------------------------------------------------
@@ -139,19 +123,18 @@ void ofApp::update(){
 //        ofSetColor( 255, 255 ); // draw the captured last frame of the previosu video
 //        vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );
 //        //--- hold last frame - end
-//        if (loopNumber>=loopMax){this->loadNew();
-//            
+        if (loopNumber>=loopMax){
+            this->loadNew();
 //        }else{
 //            loopNumber ++;
 //            momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov");
 //            momentMovie.setLoopState(OF_LOOP_NONE);
 //            momentMovie.play();
-//        }
+        }
 //    } //end of old routine to swap movies
     
     momentMovie.update();
-    //-------- new palindrome looping ting
-    //momentMovie.getCurrentFrame() = thisFrame;
+
     if(playForward){
         if(currentFrame<movieDuration){
             currentFrame++;
@@ -172,9 +155,7 @@ void ofApp::update(){
             }
         }
     }
-   // if (momentMovie.isFrameNew()){
-       // momentMovie.setFrame(currentFrame);
-    //}
+
    
 }
 
@@ -209,6 +190,7 @@ void ofApp::draw(){
         } else {
             startRange= movieDuration;
             endRange = 0;
+            loopNumber ++;
         }
     }
     

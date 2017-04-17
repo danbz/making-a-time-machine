@@ -2,13 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include <ApplicationServices/ApplicationServices.h>
+//#include <ApplicationServices/ApplicationServices.h>
 #include <string>
 #include <iostream>
 #include "ofxEasing.h"
-
-
-//#include <filesystem>
 
 class ofApp : public ofBaseApp{ 
     
@@ -38,7 +35,7 @@ public:
     
     ofxPanel gui;
     ofxFloatSlider duration;
-    ofxIntSlider loopMax, videoAlpha;
+    ofxIntSlider loopMax, videoAlpha, fadeSpeed;
     ofxToggle fade;
     
     //ofxGuiGroup primGroup;
