@@ -114,6 +114,8 @@
 		33FF03222909C1A0ECE43753 /* cv.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cv.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cv.h; sourceTree = SOURCE_ROOT; };
 		35EEEA3F57EFB3D7DE4C0DED /* saturate_cast.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = saturate_cast.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/saturate_cast.hpp; sourceTree = SOURCE_ROOT; };
 		36F0FF7F8D7342D220CC6319 /* dummy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = dummy.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/dummy.h; sourceTree = SOURCE_ROOT; };
+		37442D651EA5091F00902233 /* ofxEasing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxEasing.h; path = ../../../addons/ofxEasing/src/ofxEasing.h; sourceTree = "<group>"; };
+		3787B1EE1EA50513008F4DC8 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 		37D155721DCC51F3D1DC2E02 /* color_detail.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = color_detail.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/detail/color_detail.hpp; sourceTree = SOURCE_ROOT; };
 		3ADB4E06C4EDB97E020A778D /* functional.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = functional.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/functional.hpp; sourceTree = SOURCE_ROOT; };
 		3B361208CD4107E479F04E7B /* NetworkingUtils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = NetworkingUtils.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/posix/NetworkingUtils.cpp; sourceTree = SOURCE_ROOT; };
@@ -455,6 +457,15 @@
 			name = osc;
 			sourceTree = "<group>";
 		};
+		3787B1EF1EA5051E008F4DC8 /* ofxEasing */ = {
+			isa = PBXGroup;
+			children = (
+				3787B1EE1EA50513008F4DC8 /* src */,
+			);
+			name = ofxEasing;
+			path = ../../../addons/ofxEasing;
+			sourceTree = "<group>";
+		};
 		38871A5825686AE018EC2BF0 /* libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -540,6 +551,7 @@
 		6948EE371B920CB800B5AC1A /* local_addons */ = {
 			isa = PBXGroup;
 			children = (
+				37442D651EA5091F00902233 /* ofxEasing.h */,
 			);
 			name = local_addons;
 			sourceTree = "<group>";
@@ -687,6 +699,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				3787B1EF1EA5051E008F4DC8 /* ofxEasing */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
 				A0B90D3B0ADB9C1716816714 /* ofxOpenCv */,
 				E6053AB7FEC63D5F83825B88 /* ofxOsc */,
@@ -1108,7 +1121,8 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					../../../libs/boost/,
+					"$(OF_PATH)/addons/ofxEasing/src/",
+					../../../addons/ofxEasing/src,
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(OF_CORE_HEADERS)",
@@ -1153,7 +1167,8 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					../../../libs/boost/,
+					../../../addons/ofxEasing/src,
+					"$(OF_PATH)/addons/ofxEasing/src/",
 				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					../../../libs/boost/,
@@ -1253,7 +1268,9 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					../../../libs/boost/,
+					"$(OF_PATH)/addons/ofxEasing/src/",
+					../../../addons/ofxEasing/src,
+					"$(OF_PATH)/addons/ofxEasing/src/",
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(OF_CORE_HEADERS)",
@@ -1298,7 +1315,8 @@
 					../../../addons/ofxOsc/libs/oscpack/src/ip/win32,
 					../../../addons/ofxOsc/libs/oscpack/src/osc,
 					../../../addons/ofxOsc/src,
-					../../../libs/boost/,
+					../../../addons/ofxEasing/src,
+					"$(OF_PATH)/addons/ofxEasing/src/",
 				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					../../../libs/boost/,

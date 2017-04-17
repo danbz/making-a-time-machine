@@ -5,6 +5,9 @@
 #include <ApplicationServices/ApplicationServices.h>
 #include <string>
 #include <iostream>
+#include "ofxEasing.h"
+
+
 //#include <filesystem>
 
 class ofApp : public ofBaseApp{ 
@@ -34,9 +37,9 @@ public:
     ofImage             vidImage;
     
     ofxPanel gui;
-    ofxFloatSlider speed;
+    ofxFloatSlider duration;
     ofxIntSlider loopMax, videoAlpha;
-    ofxToggle fade, palindrome;
+    ofxToggle fade;
     
     //ofxGuiGroup primGroup;
     //ofxFloatSlider speed, length;
