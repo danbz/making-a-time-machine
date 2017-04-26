@@ -55,8 +55,7 @@ void ofApp::setup(){
     gui.add( fade.setup( "fade", false));
     //gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
-    
-    
+    momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
     // CGDisplayHideCursor(kCGDirectMainDisplay);
     
     //--- easing stuff
