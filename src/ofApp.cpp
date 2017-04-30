@@ -30,6 +30,7 @@ int startRange;
 int endRange;
 float endPosition;
 float easedFrame;
+int numOfFiles;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -55,6 +56,8 @@ void ofApp::setup(){
     gui.add( fade.setup( "fade", false));
     //gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
+    playForward = true;
+    
     momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
     // CGDisplayHideCursor(kCGDirectMainDisplay);
     
@@ -64,22 +67,36 @@ void ofApp::setup(){
     startRange= 0;
     endRange = 0;
     
+    //read directory for number of files
+    files.allowExt("mov");
+    string path = "/Users/danbuzzo/Desktop/lapses";
+    //string path = "/data/movies";
+
+    
+    files.listDir(path); // put a video path here with several video files in a folder
+    std::cout << "number of files" << files.size() << endl;
+     numOfFiles = files.size() & INT_MAX;;
     this->loadNew();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::loadNew(){
     loopNumber =0; // initialise loops to zero
-    vdoNr = (int) ofRandom(1, totalMovies);
+    //vdoNr = (int) ofRandom(1, totalMovies);
     
     momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
     
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
-    momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov"); //choose new clip randomly
-     // momentMovie.load("lge-movies/sky-h264.mov"); //choose new clip for test comparison
+    string newMovie = files.getPath(ofRandom(numOfFiles));
+    std::cout << newMovie <<endl;
+    //momentMovie.load(files.getPath(ofRandom(numOfFiles)));
+    momentMovie.load(newMovie);
+    
+    // momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov"); //choose new clip randomly
     momentMovie.setLoopState(OF_LOOP_NONE);
-    momentMovie.play();
-    momentMovie.setSpeed(0);
+    //momentMovie.play();
+    //momentMovie.setSpeed(0);
     movieDuration = momentMovie.getTotalNumFrames();
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade

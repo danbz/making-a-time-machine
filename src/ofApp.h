@@ -43,6 +43,6 @@ public:
     //ofxVec2Slider size;
     //ofxColorSlider color;
     
-    
+    ofDirectory files;
     
 };
