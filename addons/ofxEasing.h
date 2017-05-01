@@ -70,7 +70,7 @@ class bounce{
 
 class circ{
 	public:
-	inline static float easeIn (float t,float b , float c, float d) {
+	inline static float easeIn (float t ,float b , float c, float d) {
 		return -c * (sqrt(1 - (t/=d)*t) - 1) + b;
 	}
 	inline static float easeOut(float t,float b , float c, float d) {

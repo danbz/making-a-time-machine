@@ -38,10 +38,6 @@ public:
     ofxIntSlider loopMax, videoAlpha, fadeSpeed;
     ofxToggle fade;
     
-    //ofxGuiGroup primGroup;
-    //ofxFloatSlider speed, length;
-    //ofxVec2Slider size;
-    //ofxColorSlider color;
     
     ofDirectory files;
     

@@ -2,6 +2,7 @@
 #include "ofMath.h"
 #include "ofxGui.h"
 #include "ofxEasing.h"
+#include "ofUtils.cpp"
 
 float timeNow;
 float timeLimit;
@@ -67,11 +68,13 @@ void ofApp::setup(){
     startRange= 0;
     endRange = 0;
     
+    //ofRestoreWorkingDirectoryToDefault();
+    cout << "dataPathRoot(): " <<  dataPathRoot()  << endl; // prints-> dataPathRoot(): ../../../data/
+
     //read directory for number of files
     files.allowExt("mov");
-    string path = "/Users/danbuzzo/Desktop/lapses";
-    //string path = "/data/movies";
-
+    //string path = "/Users/danbuzzo/Desktop/lapses";
+    string path = "movies"; //relative to /bin/data folder
     
     files.listDir(path); // put a video path here with several video files in a folder
     std::cout << "number of files" << files.size() << endl;
@@ -112,7 +115,6 @@ void ofApp::xFade(){
         if (xFading) {
             ofEnableAlphaBlending();
             ofEnableBlendMode( OF_BLENDMODE_ALPHA );
-            //
             ofSetColor( 255, 255 ); // draw the captured last frame of the previous video
             vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );  // draw the captured frame to screen
             ofSetColor( 255, videoAlpha );
@@ -131,23 +133,10 @@ void ofApp::xFade(){
 
 //--------------------------------------------------------------
 void ofApp::update(){ 
-    
-//    if(momentMovie.getIsMovieDone()){ //old routine to swap movies on a timed basis
-//        //-- std::cout << "loopDone: " << loopNumber << endl;
-//        //--- hold last frame of previous loop of video to prevent flash of black -- maybe -- start
-//        vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
-//        ofSetColor( 255, 255 ); // draw the captured last frame of the previosu video
-//        vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );
-//        //--- hold last frame - end
+
         if (loopNumber>=loopMax){
             this->loadNew();
-//        }else{
-//            loopNumber ++;
-//            momentMovie.load("lge-movies/lapse-" + ofToString(vdoNr) +".mov");
-//            momentMovie.setLoopState(OF_LOOP_NONE);
-//            momentMovie.play();
         }
-//    } //end of old routine to swap movies
     
     momentMovie.update();
 
@@ -177,11 +166,6 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    //if (blackGap == 0){
-    // momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //use to insert black space between each video
-    //}
-    // ofSetColor(ofColor::white);//write debug framerate to screen
-    //  ofDrawBitmapString("value: " + ofToString(vdoNr), 10, 10);
     
     if (fade) xFade(); // if fade selected in gui then call xfade function
     momentMovie.draw(0,0,ofGetWidth(),ofGetHeight()); //draw frame of movie
