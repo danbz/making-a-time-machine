@@ -6,11 +6,13 @@
 */bin/*
 !*/bin/data/
 
+
 #########
 # project specific
 #########
 
 *.mov 
+*.mp4
 
 #########
 # general

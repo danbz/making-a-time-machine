@@ -1,9 +1,10 @@
 #include "ofMain.h"
 #include "ofApp.h"
+#include "ofClock.h"
 
 //========================================================================
 int main( ){
-	//ofSetupOpenGL(1280,720,OF_WINDOW);			// <-------- setup the GL context
+	ofSetupOpenGL(1080,720,OF_WINDOW);			// <-------- setup the GL context
 
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
@@ -21,11 +22,11 @@ int main( ){
     
     
     //ofSetLogLevel(OF_LOG_VERBOSE);
-    ofGLESWindowSettings settings;
-    settings.width = 1280;
-    settings.height = 720;
-    settings.setGLESVersion(2);
-    ofCreateWindow(settings);
+//    ofGLESWindowSettings settings;
+//    settings.width = 1280;
+//    settings.height = 720;
+//    settings.setGLESVersion(2);
+//    ofCreateWindow(settings);
 
 	ofRunApp(new ofApp()); 
 

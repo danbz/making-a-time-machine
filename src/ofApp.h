@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "ofxEasing.h"
+#include "ofClock.h"
 
 class ofApp : public ofBaseApp{ 
     
@@ -40,5 +41,9 @@ public:
     
     
     ofDirectory files;
+    
+    // - clock additions
+    ofClock clock;
+
     
 };

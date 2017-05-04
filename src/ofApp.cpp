@@ -3,19 +3,20 @@
 #include "ofxGui.h"
 #include "ofxEasing.h"
 #include "ofUtils.cpp"
+#include "ofClock.h"
+#include <ctime>
 
 float timeNow;
 float timeLimit;
-float randomNumber;
 int loopNumber;
 int loopMax;
 int totalMovies;
 int movieDuration;
 int currentFrame;
-bool playForward;
 
 int vdoNr;
 bool showGui;
+bool showClock;
 bool xFading = false;
 int xFadeProgress = 0;
  namespace fs = std::filesystem;
@@ -26,12 +27,21 @@ int fadeSpeed;
 auto duration = 5.f;
 float initTime = 0;
 auto endTime = initTime + duration;
-bool leftToRight = true;
+bool playForward = true;
 int startRange;
 int endRange;
-float endPosition;
-float easedFrame;
+int endPosition;
+int easedFrame;
 int numOfFiles;
+
+//-- clock stuff
+float clockRadius;
+int clockPosLeft;
+int clockPosTop;
+
+int clockSec;
+int clockMin;
+int clockHrs;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -42,7 +52,6 @@ void ofApp::setup(){
     timeNow = 0;// always a good practice to define your variables in setup.
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
-    vdoNr=1; //starting random number for selecting movie
     totalMovies=11; //total amount of movies available to be played
     
     movieDuration=0;
@@ -57,6 +66,7 @@ void ofApp::setup(){
     gui.add( fade.setup( "fade", false));
     //gui.add( palindrome.setup( "palindrome", false));
     showGui = true;
+    showClock = true;
     playForward = true;
     
     momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
@@ -81,25 +91,27 @@ void ofApp::setup(){
      numOfFiles = files.size() & INT_MAX;;
     this->loadNew();
     
+    // -- clock setup
+    clockRadius = 60.0;
+    clockPosLeft = ofGetWidth()-110;
+    clockPosTop = ofGetHeight()-110;;
+    clock.setup();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::loadNew(){
     loopNumber =0; // initialise loops to zero
-    //vdoNr = (int) ofRandom(1, totalMovies);
     
     momentMovie.setPixelFormat(OF_PIXELS_NATIVE);
     
     vidImage.grabScreen(0,0, ofGetWidth(), ofGetHeight() ); // grab last frame of current video
     string newMovie = files.getPath(ofRandom(numOfFiles));
     std::cout << newMovie <<endl;
-    //momentMovie.load(files.getPath(ofRandom(numOfFiles)));
     momentMovie.load(newMovie);
     
-    // momentMovie.load("lge-movies/loop" + ofToString(vdoNr) +".mov"); //choose new clip randomly
     momentMovie.setLoopState(OF_LOOP_NONE);
-    //momentMovie.play();
-    //momentMovie.setSpeed(0);
+
     movieDuration = momentMovie.getTotalNumFrames();
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
@@ -108,6 +120,7 @@ void ofApp::loadNew(){
         xFade(); // if xfade is selected in gui then perform xfade.
     }
 }
+
 
 //--------------------------------------------------------------
 void ofApp::xFade(){
@@ -137,31 +150,19 @@ void ofApp::update(){
         if (loopNumber>=loopMax){
             this->loadNew();
         }
-    
+
     momentMovie.update();
 
-    if(playForward){
-        if(currentFrame<movieDuration){
-            currentFrame++;
-        }else{
-            playForward = false; //got to the end - turn round
-            currentFrame--;
-        }
-    }else{
-        if (currentFrame>0){
-            currentFrame--;
-        }else{
-            playForward = true; //got to the beginning - turn round
-            if (loopNumber>=loopMax){
-                this->loadNew();
-            } else{
-                currentFrame++;
-                loopNumber ++;
-            }
-        }
-    }
+   //--clock updates
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    clockSec = now->tm_sec;
+    //  clockMin = now->tm_min;
+    clockMin = easedFrame % 60;
+    clockHrs = easedFrame/60;
+    // clockHrs = now->tm_hour;
+    clock.update(clockSec, clockMin, clockHrs);
 
-   
 }
 
 //--------------------------------------------------------------
@@ -183,8 +184,8 @@ void ofApp::draw(){
     if (ofGetElapsedTimef() > endTime) {// start a loop left to right
         initTime = ofGetElapsedTimef();
         endTime = initTime + duration;
-        leftToRight = !leftToRight;
-        if (leftToRight){
+        playForward = !playForward;
+        if (playForward){
             startRange= 0;
             endRange = movieDuration;
         } else {
@@ -198,12 +199,15 @@ void ofApp::draw(){
     //ofDrawRectangle(easedFrame, 100, h, h); //start and ease in
     // cout << easedFrame ;
     momentMovie.setFrame(easedFrame);
+    
+    if (showClock)clock.draw( clockRadius, clockPosLeft, clockPosTop );
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key==' ') loadNew(); // show new loop video
     if ( key == 'g' ) showGui = !showGui; // show or hide the gui
+    if ( key =='c' ) showClock = !showClock; //show of hide the clock
 }
 
 //--------------------------------------------------------------
