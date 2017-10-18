@@ -6,42 +6,24 @@
 #include "ofClock.h"
 #include <ctime>
 
-float timeNow;
-float timeLimit;
-int loopNumber;
-int loopMax;
-int totalMovies;
-int movieDuration;
-int currentFrame;
-
-int vdoNr;
-bool showGui;
-bool showClock;
+float timeNow, timeLimit;
+int loopNumber, loopMax, totalMovies, movieDuration, currentFrame, vdoNr, fadeSpeed;
+bool showGui, showClock;
 bool xFading = false;
 int xFadeProgress = 0;
- namespace fs = std::filesystem;
-int fadeSpeed;
-
+namespace fs = std::filesystem;
 
 //easing stuff
 auto duration = 5.f;
 float initTime = 0;
 auto endTime = initTime + duration;
 bool playForward = true;
-int startRange;
-int endRange;
-int endPosition;
-int easedFrame;
-int numOfFiles;
+int startRange, endRange, endPosition, easedFrame, numOfFiles;
 
 //-- clock stuff
 float clockRadius;
-int clockPosLeft;
-int clockPosTop;
-
-int clockSec;
-int clockMin;
-int clockHrs;
+int clockPosLeft, clockPosTop;
+int clockSec, clockMin, clockHrs;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -53,7 +35,6 @@ void ofApp::setup(){
     loopNumber =0; // initialise loops to off
     loopMax=3; // max times to loop each movie - controllable via gui
     totalMovies=11; //total amount of movies available to be played
-    
     movieDuration=0;
     currentFrame=0;
     
@@ -80,7 +61,7 @@ void ofApp::setup(){
     
     //ofRestoreWorkingDirectoryToDefault();
     cout << "dataPathRoot(): " <<  dataPathRoot()  << endl; // prints-> dataPathRoot(): ../../../data/
-
+    
     //read directory for number of files
     files.allowExt("mov");
     //string path = "/Users/danbuzzo/Desktop/lapses";
@@ -88,7 +69,7 @@ void ofApp::setup(){
     
     files.listDir(path); // put a video path here with several video files in a folder
     std::cout << "number of files" << files.size() << endl;
-     numOfFiles = files.size() & INT_MAX;;
+    numOfFiles = files.size() & INT_MAX;;
     this->loadNew();
     
     // -- clock setup
@@ -109,9 +90,7 @@ void ofApp::loadNew(){
     string newMovie = files.getPath(ofRandom(numOfFiles));
     std::cout << newMovie <<endl;
     momentMovie.load(newMovie);
-    
     momentMovie.setLoopState(OF_LOOP_NONE);
-
     movieDuration = momentMovie.getTotalNumFrames();
     xFading = true; // set flag to show we should be xFading as a new clip has been loaded
     videoAlpha=0; // set alpha of video clip to 0 in preparation to xFade
@@ -121,39 +100,38 @@ void ofApp::loadNew(){
     }
 }
 
-
 //--------------------------------------------------------------
 void ofApp::xFade(){
     
-        if (xFading) {
-            ofEnableAlphaBlending();
-            ofEnableBlendMode( OF_BLENDMODE_ALPHA );
-            ofSetColor( 255, 255 ); // draw the captured last frame of the previous video
-            vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );  // draw the captured frame to screen
-            ofSetColor( 255, videoAlpha );
-            
-            //--- fade progression
-            if (videoAlpha<255) {
-                videoAlpha = videoAlpha+fadeSpeed;
-                if (videoAlpha>255){videoAlpha=255;}
-                }
-            else {
-                videoAlpha=255;
-                xFading = false; // xfading complete
-            }
+    if (xFading) {
+        ofEnableAlphaBlending();
+        ofEnableBlendMode( OF_BLENDMODE_ALPHA );
+        ofSetColor( 255, 255 ); // draw the captured last frame of the previous video
+        vidImage.draw( 0, 0, ofGetWidth(), ofGetHeight() );  // draw the captured frame to screen
+        ofSetColor( 255, videoAlpha );
+        
+        //--- fade progression
+        if (videoAlpha<255) {
+            videoAlpha = videoAlpha+fadeSpeed;
+            if (videoAlpha>255){videoAlpha=255;}
         }
+        else {
+            videoAlpha=255;
+            xFading = false; // xfading complete
+        }
+    }
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){ 
-
-        if (loopNumber>=loopMax){
-            this->loadNew();
-        }
-
+void ofApp::update(){
+    
+    if (loopNumber>=loopMax){
+        this->loadNew();
+    }
+    
     momentMovie.update();
-
-   //--clock updates
+    
+    //--clock updates
     time_t t = time(0);   // get time now
     struct tm * now = localtime( & t );
     clockSec = now->tm_sec;
@@ -162,7 +140,7 @@ void ofApp::update(){
     clockHrs = easedFrame/60;
     // clockHrs = now->tm_hour;
     clock.update(clockSec, clockMin, clockHrs);
-
+    
 }
 
 //--------------------------------------------------------------
@@ -175,9 +153,9 @@ void ofApp::draw(){
     
     //-- draw easing fuctiuons
     ofSetColor(255);
-    auto h = 20;
-    auto y = 20;
-    auto i = 0;
+    //    auto h = 20;
+    //    auto y = 20;
+    //    auto i = 0;
     //float newNow=0.f;
     float now = ofGetElapsedTimef();
     
